@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* --- CUTE VALENTINE PALETTE --- */
+            --rose-gold: #e0bfb8;
+            --hot-pink: #ff4d88;
+            --soft-pink: #ffe3e8;
+            --cream-bg: #fff0f5;
+            --text-dark: #8a4b5a;
+            
+            /* Frosted Pink Glass Effect */
+            --glass-pink: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            
+            --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, var(--cream-bg) 0%, #fad0c4 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- BACKGROUND FLOATING HEARTS --- */
+        .heart-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute; bottom: -10vh;
+            font-size: 2rem; opacity: 0.5;
+            animation: floatUp linear infinite; color: var(--hot-pink);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- HERO SECTION --- */
+        .screen-center {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: relative; z-index: 2; transition: opacity 1s ease;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            background: linear-gradient(135deg, var(--hot-pink) 0%, var(--rose-gold) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem; letter-spacing: -1px;
+            animation: fadeUp 1s var(--ease-apple) forwards;
+            text-shadow: 0 5px 15px rgba(255, 77, 136, 0.2);
+        }
+
+        .dice-container {
+            width: 130px; height: 130px; cursor: pointer;
+            position: relative; transition: transform 0.3s var(--ease-apple);
+            filter: drop-shadow(0 0 20px rgba(255, 77, 136, 0.4));
+        }
+        .dice-container:hover { transform: scale(1.05) rotate(5deg); }
+
+        .d20-svg {
+            width: 100%; height: 100%; fill: rgba(255, 255, 255, 0.2);
+            stroke: var(--hot-pink); stroke-width: 2;
+            transition: all 0.5s var(--ease-apple);
+        }
+        .dice-val {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif; font-size: 2.5rem;
+            color: var(--hot-pink); font-weight: 800;
+        }
+
+        /* --- ALBUM SECTION --- */
+        #album-section {
+            display: none; padding: 4rem 2rem;
+            opacity: 0; animation: fadeIn 1.5s var(--ease-apple) forwards;
+            position: relative; z-index: 2;
+        }
+
+        .stats-hud {
+            display: flex; justify-content: center; gap: 20px;
+            margin-bottom: 3rem; flex-wrap: wrap;
+        }
+        .stat-pill {
+            background: var(--glass-pink); backdrop-filter: blur(20px);
+            border: 2px solid white; padding: 10px 24px;
+            border-radius: 100px; font-size: 0.9rem;
+            color: var(--text-dark); box-shadow: 0 8px 32px 0 rgba(255, 77, 136, 0.2);
+            display: flex; align-items: center; gap: 8px; font-weight: 600;
+        }
+        .stat-highlight { color: var(--hot-pink); font-family: 'Cinzel', serif; font-size: 1.1rem;}
+
+        /* --- FLIP CARD STYLES --- */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .memory-card {
+            background-color: transparent;
+            height: 450px;
+            perspective: 1000px; /* Needed for 3D effect */
+            cursor: pointer;
+        }
+
+        /* This container actually flips */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            box-shadow: 0 25px 50px -12px rgba(255, 77, 136, 0.3);
+            border-radius: 25px;
+        }
+
+        .memory-card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Front and Back common styles */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 25px;
+            overflow: hidden;
+            border: 3px solid white;
+            background: white;
+        }
+
+        /* Front specific */
+        .card-front img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        /* Overlay text on front */
+        .card-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(138, 75, 90, 0.9), transparent);
+            color: white;
+        }
+        .click-hint {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 10px; opacity: 0.8;
+        }
+
+        /* Back specific (The Message) */
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe6eb 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            color: var(--text-dark);
+        }
+
+        .handwritten-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            line-height: 1.4;
+        }
+
+        .caption-title {
+            font-family: 'Cinzel', serif; font-size: 1.3rem;
+            color: var(--soft-pink); margin-bottom: 5px;
+        }
+
+        /* --- ANIMATIONS --- */
+        .rolling { animation: roll3D 1s infinite linear; }
+        @keyframes roll3D {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(0.9); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); }}
+        @keyframes fadeIn { to { opacity: 1; }}
+
+        .final-note {
+            text-align: center; margin-top: 5rem; padding: 3rem;
+            background: var(--glass-pink); backdrop-filter: blur(20px);
+            border-radius: 30px; border: 2px solid white;
+            max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="heart-bg" id="heart-container"></div>
+
+    <div class="screen-center" id="intro-screen">
+        <h1>🌸 Critical Heart Check 🌸</h1>
+        <div class="dice-container" onclick="rollDice()" id="d20">
+            <svg class="d20-svg" viewBox="0 0 100 100">
+                <path d="M50 5 L95 30 L95 75 L50 95 L5 75 L5 30 Z" />
+                <path d="M50 5 L50 95 M5 30 L95 30 M5 75 L95 75 M5 30 L50 50 L95 30 M5 75 L50 50 L95 75" opacity="0.5"/>
+            </svg>
+            <div class="dice-val" id="dice-text">?</div>
+        </div>
+        <p style="margin-top: 20px; opacity: 0.7; font-size: 1rem; color: var(--text-dark);">Tap to Roll for Romance</p>
+    </div>
+
+    <section id="album-section">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="margin-bottom: 10px;">🌹 The Chronicles of Us 🌹</h1>
+            <p style="color: var(--text-dark);">Tap a card to reveal a memory</p>
+        </div>
+
+        <div class="stats-hud">
+            <div class="stat-pill">💖 <span class="stat-highlight">20</span> Charisma</div>
+            <div class="stat-pill">✨ <span class="stat-highlight">∞</span> Love</div>
+            <div class="stat-pill">🧸 <span class="stat-highlight">+5</span> Cuteness</div>
+        </div>
+
+        <div class="photo-grid">
+            
+            <div class="memory-card" onclick="flipCard(this)" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="2.jpg" alt="Cute Couple">
+                        <div class="card-overlay">
+                            <div class="caption-title">Chapter One</div>
+                            <div class="click-hint">↻ Tap to Read</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="handwritten-text">"I remember the day we met. It was the moment my adventure truly began."</div>
+                        <div style="margin-top: 15px; font-size: 0.8rem; color: #aaa;">- The Start -</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="memory-card" onclick="flipCard(this)" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="1.jpg" alt="Holding Hands">
+                        <div class="card-overlay">
+                            <div class="caption-title">Perfect Synergy</div>
+                            <div class="click-hint">↻ Tap to Read</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="handwritten-text">"You are my favorite person to hold hands with. We make the best team."</div>
+                        <div style="margin-top: 15px; font-size: 0.8rem; color: #aaa;">- Synergy -</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="memory-card" onclick="flipCard(this)" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img src="3.jpg" alt="Adventure">
+                        <div class="card-overlay">
+                            <div class="caption-title">Future Quests</div>
+                            <div class="click-hint">↻ Tap to Read</div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="handwritten-text">"Ready for every dungeon, every dragon, and every Sunday ahead."</div>
+                        <div style="margin-top: 15px; font-size: 0.8rem; color: #aaa;">- Forever -</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="final-note">
+            <h2 style="font-family:'Cinzel'; color: var(--hot-pink);">Happy Valentine's Day!</h2>
+            <p>You are my critical hit. 💐</p>
+        </div>
+    </section>
+
+    <script>
+        // --- CREATE BACKGROUND HEARTS ---
+        function createHeartBg() {
+            const container = document.getElementById('heart-container');
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = Math.random() > 0.5 ? '💖' : '🌸';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 5 + 5 + 's';
+            heart.style.opacity = Math.random() * 0.5 + 0.2;
+            container.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 10000);
+        }
+        setInterval(createHeartBg, 800);
+
+        // --- ROLL LOGIC ---
+        function rollDice() {
+            const dice = document.getElementById('d20');
+            const text = document.getElementById('dice-text');
+            const intro = document.getElementById('intro-screen');
+            const album = document.getElementById('album-section');
+
+            if(dice.classList.contains('rolled')) return;
+
+            dice.classList.add('rolling');
+            text.innerText = '';
+            
+            setTimeout(() => {
+                dice.classList.remove('rolling');
+                dice.classList.add('rolled');
+                text.innerText = '20';
+                
+                // PINK FLASH EFFECT
+                document.body.style.transition = "background 0.5s ease";
+                document.body.style.background = "#ff9a9e"; 
+                
+                setTimeout(() => {
+                    document.body.style.background = "linear-gradient(135deg, var(--cream-bg) 0%, #fad0c4 100%)";
+                    intro.style.opacity = '0';
+                    setTimeout(() => {
+                        intro.style.display = 'none';
+                        album.style.display = 'block';
+                        burstHearts(); 
+                    }, 1000);
+                }, 500);
+
+            }, 1200);
+        }
+
+        // --- NEW: FLIP LOGIC ---
+        function flipCard(card) {
+            // Adds or removes the 'is-flipped' class to trigger CSS rotation
+            card.classList.toggle('is-flipped');
+        }
+
+        // --- 3D TILT EFFECT (Applied to wrapper so flip still works) ---
+        function tiltCard(e, card) {
+            // We only tilt if the card is NOT flipped to avoid confusion
+            if(card.classList.contains('is-flipped')) return;
+
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+            
+            // Apply tilt to the card element
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+        }
+
+        function resetCard(card) {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+        }
+
+        // --- CRIT SUCCESS BURST ---
+        function burstHearts() {
+            for(let i=0; i<30; i++) {
+                setTimeout(createHeartBg, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
